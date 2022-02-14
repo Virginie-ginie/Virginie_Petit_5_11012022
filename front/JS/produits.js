@@ -48,5 +48,21 @@ const showProduct = async () => {
     color.innerHTML = resultatkanap.colors[i];
     couleurKanap.appendChild(color);
   }
+
+//---------------------Ajout au local Storage --------------------------------
+  
+  let bouton = document.getElementById("addToCart")
+  const product = resultatkanap;
+  
+  function addToPanier(key, value) {
+    localStorage.setItem(key, value);
+  };      
+  
+  bouton.addEventListener('click',()=>{
+    addToCart(idResultatKanap,JSON.stringify(product));
+  })
 };
 showProduct();
+
+
+
