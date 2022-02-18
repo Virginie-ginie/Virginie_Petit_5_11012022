@@ -13,8 +13,8 @@ function recupStorage (){
 //---------------------- boucle qui envoi les elements dans le tableau articles-------------------------
         for(let i = 0; i < localStorage.length; i++){
            const key = localStorage.key(i);
-           //let article = JSON.parse(localStorage.getItem(key))
-           //articles.push(article);    
+           let article = JSON.parse(localStorage.getItem(key))
+           articles.push(article);    
         }
         console.log(articles);
 };
