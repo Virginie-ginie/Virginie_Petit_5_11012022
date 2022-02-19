@@ -93,15 +93,13 @@ function recupArticle (){
         function envoiForm () {
           let contact = {
 
-          totalPriceInput: totalPriceInput.value,
-          totalQuantiteInput: totalQuantiteInput.value,
           prenomInput: prenomInput.value,
           nomInput :nomInput.value,
           adresseInput: adresseInput.value,
           villeInput: villeInput.value,
           emailInput: emailInput.value
         };
-        console.log(envoiForm)
+        console.log(contact)
    };
 
         btnCommanderInput.addEventListener("click", (e) => {
