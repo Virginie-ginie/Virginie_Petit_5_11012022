@@ -57,6 +57,63 @@ function recupArticle (){
         };
         recupArticle()
 
+        //------------------- on relis le  HTML avec le JS pour le formulaire---------------------------
+
+        let totalQuantiteInput = document.querySelector("#totalQuantity");
+        totalQuantite = totalQuantiteInput.value
+
+        let totalPriceInput= document.querySelector("#totalPrice");
+        totalPrice = totalPriceInput.value
+        
+        let prenomInput = document.querySelector("#firstName");
+        //let prenomErreur = document.querySelector("#firstNameErrorMsg");
+        prenom = prenomInput.value
+        
+        let nomInput = document.querySelector("#lastName");
+        //let nomErreur = document.querySelector("#lastNameErrorMsg");
+        nom = nomInput.value
+        
+        let adresseInput = document.querySelector("#address");
+        //let adresseErreur = document.querySelector("#addressErrorMsg");
+        adresse = adresseInput.value
+        
+        let villeInput = document.querySelector("#city");
+        //let villeErreur = document.querySelector("#cityErrorMsg");
+        ville = villeInput.value
+        
+        let emailInput = document.querySelector("#email");
+        //let emailErreur = document.querySelector("#emailErrorMsg");
+        email = emailInput.value
+
+        let btnCommanderInput = document.querySelector("#order")
+      
+
+        //--------------------------- On crée un fonction pour envoyer le formulaire -----------------------------------
+        
+        function envoiForm () {
+          let contact = {
+
+          totalPriceInput: totalPriceInput.value,
+          totalQuantiteInput: totalQuantiteInput.value,
+          prenomInput: prenomInput.value,
+          nomInput :nomInput.value,
+          adresseInput: adresseInput.value,
+          villeInput: villeInput.value,
+          emailInput: emailInput.value
+        };
+        console.log(envoiForm)
+   };
+
+        btnCommanderInput.addEventListener("click", (e) => {
+          e.preventDefault()
+         envoiForm()
+        }
+        )
+
+
+
+
+      
  //-------------lire l'id dans le tableau-------------------
 
 
@@ -64,7 +121,7 @@ function recupArticle (){
 
 
         //------------- chercher les info dans l'API --------------
-     
+        
 
         //------------- faire le calcul final----------------------
         //------------- modifier la page HTML----------------------

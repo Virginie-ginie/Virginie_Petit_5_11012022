@@ -20,7 +20,7 @@ const showProduct = async () => {
 
   let imageKanap = document.querySelector(".item__img");
 
-  let couleurKanap = document.querySelector("#colors");
+  let totalQuantite = document.querySelector("#colors");
 
   //------------------ Ajout des balises--------------------------------
 
