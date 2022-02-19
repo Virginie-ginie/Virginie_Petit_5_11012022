@@ -56,22 +56,57 @@ const showProduct = async () => {
 
   //---------------------Ajout au local Storage --------------------------------
 
-  //------------------ Recupération de l'element HTML quantité-----------
-  
-  let quantity = document.querySelector("#quantity");
-  let quantityValue = quantity.value
-  let quantiteKanap = { "quantité":quantityValue};
+//------------------ Tableau produit ---------------------------------
  
+let product = resultatkanap
 
-// //------------------ Recupération de l'element HTML couleur-----------
+//------------------- on relis le  HTML avec le JS pour le selection des couleurs  et la quantite------
+ 
+let color = document.querySelector("#colors");
+let quantite = document.querySelector('#quantity')
 
-  let color = document.querySelector("#colors");
-  let colorValue = color.value;
 
-  let couleurArticle = { "color ": colorValue };
+//-------------------- on crée une fonction qui va etre appelle des qu'on change de couleur ----
+
+function selectColor(){
+
+  //----------------- on recupere la couleur que l'utilisateur choisie-------
+ 
+  var teinte = color.value
+  console.log(teinte)
+
+  //------------------ on l'ajoute au tableau produit --------------------------------
+ 
+  product.teinteSelect = teinte
+  console.log(product)
+}
+
+//-------------------- on crée une fonction qui va etre appelle des qu'on change la quantite ----
+
+function selectQuantity(){
+
+  //----------------- on recupere la quantite que l'utilisateur choisie-------
+ 
+  var quantite = quantity.value
+  console.log(quantite)
+
+  //------------------ on l'ajoute au tableau produit --------------------------------
+ 
+  product.quantiteSelect = quantite
+  console.log(product)
+}
+//---------------on appelle la fonction--------------------
+
+color.addEventListener('input' ,(e) => {
+  selectColor()
+})
+ quantity.addEventListener('input' ,(e) =>{
+   selectQuantity()
+ })
+
 
   let bouton = document.getElementById("addToCart");
-  const product = resultatkanap;
+  console.log(product);
 
   function addToCart(key, value) {
     localStorage.setItem(key, value);
@@ -81,9 +116,7 @@ const showProduct = async () => {
     addToCart(
       idResultatKanap,
       JSON.stringify(product) 
-      +
-        JSON.stringify(couleurArticle) +
-        JSON.stringify(quantiteKanap)
+      
       );
       location.href = "cart.html"
   });
