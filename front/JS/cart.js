@@ -60,31 +60,12 @@ function recupArticle (){
         //------------------- on relis le  HTML avec le JS pour le formulaire---------------------------
 
         let totalQuantiteInput = document.querySelector("#totalQuantity");
-        totalQuantite = totalQuantiteInput.value
-
         let totalPriceInput= document.querySelector("#totalPrice");
-        totalPrice = totalPriceInput.value
-        
         let prenomInput = document.querySelector("#firstName");
-        //let prenomErreur = document.querySelector("#firstNameErrorMsg");
-        prenom = prenomInput.value
-        
-        let nomInput = document.querySelector("#lastName");
-        //let nomErreur = document.querySelector("#lastNameErrorMsg");
-        nom = nomInput.value
-        
+        let nomInput = document.querySelector("#lastName"); 
         let adresseInput = document.querySelector("#address");
-        //let adresseErreur = document.querySelector("#addressErrorMsg");
-        adresse = adresseInput.value
-        
-        let villeInput = document.querySelector("#city");
-        //let villeErreur = document.querySelector("#cityErrorMsg");
-        ville = villeInput.value
-        
+        let villeInput = document.querySelector("#city"); 
         let emailInput = document.querySelector("#email");
-        //let emailErreur = document.querySelector("#emailErrorMsg");
-        email = emailInput.value
-
         let btnCommanderInput = document.querySelector("#order")
       
 
@@ -103,15 +84,61 @@ function recupArticle (){
    };
 
         btnCommanderInput.addEventListener("click", (e) => {
+
+           //--------empecher le refresh de la page quand on clique------------
           e.preventDefault()
+
          envoiForm()
         }
         )
+//----------------------- Message d'erreur si le formulaire n'est pas bien rempli---------------------------------
 
+        const regexNames = /^[a-z ,.'-]+$/i;
+        const regexAddress = /^[a-zA-Z0-9\s,'-]*$/;
+        const regexCity = /^([a-zA-Z\u0080-\u024F]+(?:. |-| |'))*[a-zA-Z\u0080-\u024F]*$/;
+        const regexMail = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9._-]{2,}\.[a-z]{2,4}$/;
 
+//------------------------chaque fois que l'utilisateur tente d'envoyer les données------------------------------
+//------------------------on vérifie que le champ est valide---------------------------------------------------
 
+        prenomInput.addEventListener("input", () => {
 
-      
+    //-------------------si il est invalide, on affiche un message d'erreur personnalisé-------------------------
+
+    if (regexNames.test(prenomInput.value) == false) {
+        document.getElementById('firstNameErrorMsg').innerHTML = "format de votre prénom incorrect";
+    } else { document.getElementById('firstNameErrorMsg').innerHTML = "" } 
+
+    //-------------------sinon le msg d'erreur s'enlève-----------------------------------------------------
+});//-------------------ça empêche l'envoi des données du formulaire au back---------------------------------
+
+        nomInput.addEventListener("input", () => {
+    if (regexNames.test(nomInput.value) == false) { 
+
+      //-----------------------------si les donnees saisies dans mon input sont incorrectes, un msg d'erreur apparait------------------
+
+        document.getElementById('lastNameErrorMsg').innerHTML = "format de votre nom incorrect";
+    } else { document.getElementById('lastNameErrorMsg').innerHTML = "" }
+});
+
+adresseInput.addEventListener("input", () => {
+    if (regexAddress.test(adresseInput.value) == false) {
+        document.getElementById('addressErrorMsg').innerHTML = "format d'adresse incorrect";
+    } else { document.getElementById('addressErrorMsg').innerHTML = "" }
+});
+
+villeInput.addEventListener("input", () => {
+    if (regexCity.test(villeInput.value) == false) {
+        document.getElementById('cityErrorMsg').innerHTML = "format de ville incorrect";
+    } else { document.getElementById('cityErrorMsg').innerHTML = "" }
+});
+
+emailInput.addEventListener("input", () => {
+    if (regexMail.test(emailInput.value) == false) {
+        document.getElementById('emailErrorMsg').innerHTML = "l'email saisi n'est pas correct";
+    } else { document.getElementById('emailErrorMsg').innerHTML = "" }
+});
+
  //-------------lire l'id dans le tableau-------------------
 
 

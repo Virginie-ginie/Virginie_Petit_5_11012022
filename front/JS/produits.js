@@ -123,29 +123,3 @@ color.addEventListener('input' ,(e) => {
 };
 showProduct();
 
-
-//---------------------Ajout des produits au panier----------------------------
-
-// let couleurChoisie = document.getElementById("colors");
-// let quantiteChoisie = document.getElementById("quantity");
-// let cart__items = document.getElementById("cart__items")
-// if (quantiteChoisie.value > 0 && quantiteChoisie.value <=100 && quantiteChoisie.value != 0 && couleurChoisie.value != 0) {{
-  
-//   if (localStorage.getItem("panier")) {
-    
-//     let productPanier = JSON.parse(localStorage.getItem("panier"));
-//     console.log(productPanier);
-
-//     let idKanap = idResultatKanap;
-//             let Kanapcouleur = document.querySelector("#colors").value;
-//             let kanapquantite = document.querySelector("#quantity").value;
-
-//             const resultFind = productCart.find(
-//                 (el) => el.idKanap === idResultatKanap && el.Kanapcouleur === Kanapcouleur);
-
-    
-//   }
-// }
-// }
-
-//------------------Les variables pour les elements qu'on veux envoyer dans le panier-----------------
