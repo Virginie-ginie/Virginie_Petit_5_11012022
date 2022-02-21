@@ -2,7 +2,8 @@
 
 //-----------------------j'initialise un tableau qui va acceuillir l'ensemble des articles-------------------------------
 let articles = [];
-
+let container = document.querySelector("#container")
+let total = document.querySelector("#total")
 
 //---------------------- Création d'une fonction qui ajoute chaque element du LocalStorage dans le tableau articles------------
 function recupStorage() {
@@ -52,7 +53,7 @@ function recupArticle() {
       const cart = `
                 <article class="cart__item" data-id="{product-ID}" data-color="{product-color}">
                 <div class="cart__item__img">
-                  <img src="${kanap.imageUrl}"/>
+                  <img src="${kanap.image}"/>
                 </div>
                 <div class="cart__item__content">
                   <div class="cart__item__content__description">
@@ -63,7 +64,7 @@ function recupArticle() {
                   <div class="cart__item__content__settings">
                     <div class="cart__item__content__settings__quantity">
                       <p>Qté :  </p>
-                      <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="42">
+                      <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${kanap.quantiteSelect}">
                     </div>
                     <div class="cart__item__content__settings__delete">
                       <p class="deleteItem">Supprimer</p>
@@ -71,7 +72,13 @@ function recupArticle() {
                   </div>
                 </div>
               </article>`;
-    cart__items.innerHTML += cart;
+
+       const Total = `
+       <p>Total (<span id="totalQuantity"><!-- 2 --></span> articles) : <span id="totalPrice">${prixUnitaire}</span> €</p>
+       
+       `       
+    container.innerHTML += cart;
+    total.innerHTML += Total
     }
     remplirPanier();
 });
