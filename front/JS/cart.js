@@ -27,7 +27,7 @@ function recupArticle() {
     //-------------------------------On recupere les prix dans l'API---------------------------
     let price;
     const recupPrice = async () => {
-      await fetch("http://localhost:3000/api/products/" + kanap._id)
+      await fetch("http://localhost:3000/api/products/" + kanap.id)
       .then((res) => res.json())
       .then((JSON) => (price = JSON.price))
       
@@ -57,13 +57,13 @@ function recupArticle() {
                 <div class="cart__item__content">
                   <div class="cart__item__content__description">
                     <h2>${kanap.name}</h2>
-                    <p>${kanap.teinteSelect}</p>
-                    <p>${prixUnitaire} €</p>
+                    <p></p>
+                    <p>${price} €</p>
                   </div>
                   <div class="cart__item__content__settings">
                     <div class="cart__item__content__settings__quantity">
                       <p>Qté :  </p>
-                      <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${kanap.quantiteSelect}">
+                      <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="42">
                     </div>
                     <div class="cart__item__content__settings__delete">
                       <p class="deleteItem">Supprimer</p>

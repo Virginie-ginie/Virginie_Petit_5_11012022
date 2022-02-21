@@ -116,10 +116,12 @@ color.addEventListener('input' ,(e) => {
     addToCart(
       idResultatKanap,
       JSON.stringify({
-
+        id: product._id,
         name:product.name,
         image:product.imageUrl,
-        altTxt:product.altTxt
+        altTxt:product.altTxt,
+        quantiteSelect:product.quantiteSelect,
+        teinteSelect:product.teinteSelect
 
       }));
       location.href = "cart.html"
