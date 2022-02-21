@@ -115,9 +115,13 @@ color.addEventListener('input' ,(e) => {
   bouton.addEventListener("click", () => {
     addToCart(
       idResultatKanap,
-      JSON.stringify(product) 
-      
-      );
+      JSON.stringify({
+
+        name:product.name,
+        image:product.imageUrl,
+        altTxt:product.altTxt
+
+      }));
       location.href = "cart.html"
   });
 };

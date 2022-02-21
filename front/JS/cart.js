@@ -34,18 +34,22 @@ function recupArticle() {
       .then(() => console.log(price))
       .catch((error) => console.error(error));
     };
-    
-    recupPrice();
 
     //--------------------- Multiplication quantité * prix unitaire----------------------
-    const prixUnitaire = kanap.quantiteSelect * price;
-      //kanap.price.innerHTML = prixUnitaire;
+    let prixUnitaire = 0;
+    async function multiplierPrix(){
+      await recupPrice();
+      prixUnitaire = kanap.quantiteSelect * price;
 
-     console.log(prixUnitaire);
+    console.log(prixUnitaire);
+    
+    }
+    
 
 //-----------------------------on insere nos elements dans l'HTML-----------------------------------------
-
-    const cart = `
+    async function remplirPanier(){
+      await multiplierPrix();
+      const cart = `
                 <article class="cart__item" data-id="{product-ID}" data-color="{product-color}">
                 <div class="cart__item__img">
                   <img src="${kanap.imageUrl}"/>
@@ -54,7 +58,7 @@ function recupArticle() {
                   <div class="cart__item__content__description">
                     <h2>${kanap.name}</h2>
                     <p>${kanap.teinteSelect}</p>
-                    <p>€</p>
+                    <p>${prixUnitaire} €</p>
                   </div>
                   <div class="cart__item__content__settings">
                     <div class="cart__item__content__settings__quantity">
@@ -68,7 +72,9 @@ function recupArticle() {
                 </div>
               </article>`;
     cart__items.innerHTML += cart;
-  });
+    }
+    remplirPanier();
+});
 }
 recupArticle();
 
