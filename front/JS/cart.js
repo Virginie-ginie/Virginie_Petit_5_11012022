@@ -24,6 +24,7 @@ function recupArticle() {
     console.log(kanap);
     
     console.log(kanap.name);
+   
     
     //-------------------------------On recupere les prix dans l'API---------------------------
     let price;
@@ -58,7 +59,7 @@ function recupArticle() {
                 <div class="cart__item__content">
                   <div class="cart__item__content__description">
                     <h2>${kanap.name}</h2>
-                    <p></p>
+                    <p>${kanap.teinteSelect}</p>
                     <p>${price} €</p>
                   </div>
                   <div class="cart__item__content__settings">
@@ -73,19 +74,55 @@ function recupArticle() {
                 </div>
               </article>`;
 
-       const Total = `
-       <p>Total (<span id="totalQuantity"><!-- 2 --></span> articles) : <span id="totalPrice">${prixUnitaire}</span> €</p>
-       
-       `       
-    container.innerHTML += cart;
-    total.innerHTML += Total
-    }
-    remplirPanier();
+              const Total = `
+              <p>Total (<span id="totalQuantity"><!-- 2 --></span> articles) : <span id="totalPrice">${prixUnitaire}</span> €</p>
+              `   
+                  
+              container.innerHTML += cart;
+              total.innerHTML += Total
+            }
+            remplirPanier();
 });
 }
 recupArticle();
 
 let sommeTotal = 0;
+
+//------------------------------Modifier la quantité / la couleur------------------------------------------
+
+//********************************************************Supprimer un element du panier*************************************************
+
+//--------------- séléction des reférences du bouton --------------------
+let btnSupprimer = document.querySelectorAll(".deleteItem");
+console.log(btnSupprimer);
+
+for (let i =0; i < btnSupprimer.length; i++){
+  btnSupprimer.addEventListener("click" , (event) =>{
+    event.preventDefault();
+    //--------------------- enregistrer l'id et la couleur séléctionnés par le bouton supprimer--------------------------
+    let deleteId = productLocalStorage[i].idResultatKanap;
+    let deleteColor = productLocalStorage[i].couleurKanap;
+    
+    // -----------------------------filtrer l'élément cliqué par le bouton supprimer-------------------------------------
+    productLocalStorage = productLocalStorage.filter( elt => elt.idResultatKanap !== deleteId || elt.couleurKanap !== deleteColor);
+    
+    // ------------------------------envoyer les nouvelles données dans le localStorage------------------------------------
+    localStorage.setItem('cart', JSON.stringify(productLocalStorage));               
+    
+    //--------------------------------- avertir de la suppression et recharger la page-----------------------------------
+    alert('Votre article a bien été supprimé.');
+    
+    //------------------------Si pas de produits dans le local storage on affiche que le panier est vide-------------------
+    if (productLocalStorage.length === 0) {
+        localStorage.clear();
+      }
+      //-------------------------------Refresh rapide de la page-----------------------------------------------------
+      location.reload();
+    });
+  };
+
+
+
 
 //*********************************************FORMULAIRE *************************************************************
 
@@ -114,10 +151,13 @@ function envoiForm() {
 }
 
 btnCommanderInput.addEventListener("click", (e) => {
-  //--------empecher le refresh de la page quand on clique------------
-  e.preventDefault();
 
+  //--------empecher le refresh de la page quand on clique------------------
+  e.preventDefault();
+  
   envoiForm();
+
+  
 });
 
 //******************************************************FORMULAIRE ERREUR ****************************************************************
@@ -174,8 +214,8 @@ villeInput.addEventListener("input", () => {
   if (regexCity.test(villeInput.value) == false) {
     document.getElementById("cityErrorMsg").innerHTML =
       "format de ville incorrect";
-  } else {
-    document.getElementById("cityErrorMsg").innerHTML = "";
+    } else {
+      document.getElementById("cityErrorMsg").innerHTML = "";
   }
 });
 
@@ -187,6 +227,8 @@ emailInput.addEventListener("input", () => {
     document.getElementById("emailErrorMsg").innerHTML = "";
   }
 });
+
+
 
 //-------------lire l'id dans le tableau-------------------
 
@@ -201,7 +243,34 @@ emailInput.addEventListener("input", () => {
 
 //--------------------- Aprés la boucle ---------------------------
 
-//---------------- recuperer le total----------------------
 
 
 //---------------- l'afficher dans la page HTML-------------
+
+//-----------------------------------Envoi du formulaire au clik du bouton--------------------------------------
+
+const submitForm = document.getElementById('order');
+
+submitForm.addEventListener("click", (e) => {
+  e.preventDefault() //empeche le refresh de la page quand on clique
+
+let envoiApi = {envoiForm,container};
+console.log(envoiApi);
+
+if(confirm("Voulez-vous valider votre commande?")){
+  fetch("http://localhost:3000/api/products/order" + recupArticle, {
+    method:"POST",
+    headers:{
+      "Accept": 'application/json',
+      "Content-Type" : 'application/json'
+    },
+    body: JSON.stringify(envoiApi)
+  })
+
+  .then(reponse =>{
+    return reponse.json();
+  })
+}
+
+
+})
