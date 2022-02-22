@@ -82,44 +82,51 @@ function recupArticle() {
               total.innerHTML += Total
             }
             remplirPanier();
-});
-}
-recupArticle();
+          });
+          //*******************************************Supprimer un element du panier*************************************************
+          
+          //--------------- séléction des reférences du bouton --------------------
+          async function supprimerElement(){
+            await remplirPanier();
+            
+          
+          let btnSupprimer = document.querySelectorAll(".deleteItem");
+          console.log(btnSupprimer);
+          
+          for (let i =0; i < btnSupprimer.length; i++){
+            btnSupprimer.addEventListener("click" , (event) =>{
+              event.preventDefault();
+              console.log('clic supprimer');
+              //--------------------- enregistrer l'id et la couleur séléctionnés par le bouton supprimer--------------------------
+              let deleteId = productLocalStorage[i].idResultatKanap;
+              let deleteColor = productLocalStorage[i].couleurKanap;
+              
+              // -----------------------------filtrer l'élément cliqué par le bouton supprimer-------------------------------------
+              productLocalStorage = productLocalStorage.filter( elt => elt.idResultatKanap !== deleteId || elt.couleurKanap !== deleteColor);
+              
+              // ------------------------------envoyer les nouvelles données dans le localStorage------------------------------------
+              localStorage.setItem('cart', JSON.stringify(productLocalStorage));               
+              
+              //--------------------------------- avertir de la suppression et recharger la page-----------------------------------
+              alert('Votre article a bien été supprimé.');
+              
+              //------------------------Si pas de produits dans le local storage on affiche que le panier est vide-------------------
+              if (productLocalStorage.length === 0) {
+                  localStorage.clear();
+                }
+                //-------------------------------Refresh rapide de la page-----------------------------------------------------
+                location.reload();
+              });
+            };
+          }
+        }
+        recupArticle();
+        supprimerElement();
 
 let sommeTotal = 0;
 
 //------------------------------Modifier la quantité / la couleur------------------------------------------
 
-//********************************************************Supprimer un element du panier*************************************************
-
-//--------------- séléction des reférences du bouton --------------------
-let btnSupprimer = document.querySelectorAll(".deleteItem");
-console.log(btnSupprimer);
-
-for (let i =0; i < btnSupprimer.length; i++){
-  btnSupprimer.addEventListener("click" , (event) =>{
-    event.preventDefault();
-    //--------------------- enregistrer l'id et la couleur séléctionnés par le bouton supprimer--------------------------
-    let deleteId = productLocalStorage[i].idResultatKanap;
-    let deleteColor = productLocalStorage[i].couleurKanap;
-    
-    // -----------------------------filtrer l'élément cliqué par le bouton supprimer-------------------------------------
-    productLocalStorage = productLocalStorage.filter( elt => elt.idResultatKanap !== deleteId || elt.couleurKanap !== deleteColor);
-    
-    // ------------------------------envoyer les nouvelles données dans le localStorage------------------------------------
-    localStorage.setItem('cart', JSON.stringify(productLocalStorage));               
-    
-    //--------------------------------- avertir de la suppression et recharger la page-----------------------------------
-    alert('Votre article a bien été supprimé.');
-    
-    //------------------------Si pas de produits dans le local storage on affiche que le panier est vide-------------------
-    if (productLocalStorage.length === 0) {
-        localStorage.clear();
-      }
-      //-------------------------------Refresh rapide de la page-----------------------------------------------------
-      location.reload();
-    });
-  };
 
 
 
