@@ -81,47 +81,51 @@ function recupArticle() {
               container.innerHTML += cart;
               total.innerHTML += Total
             }
-            remplirPanier();
+           
           });
           //*******************************************Supprimer un element du panier*************************************************
           
-          //--------------- séléction des reférences du bouton --------------------
-          async function supprimerElement(){
-            await remplirPanier();
-            
+          //---------------on a sélectionné tous les boutons supprimés----------------------------
           
           let btnSupprimer = document.querySelectorAll(".deleteItem");
-          console.log(btnSupprimer);
-          
-          for (let i =0; i < btnSupprimer.length; i++){
-            btnSupprimer.addEventListener("click" , (event) =>{
-              event.preventDefault();
-              console.log('clic supprimer');
-              //--------------------- enregistrer l'id et la couleur séléctionnés par le bouton supprimer--------------------------
-              let deleteId = productLocalStorage[i].idResultatKanap;
-              let deleteColor = productLocalStorage[i].couleurKanap;
+
+      //------------------on doit écouter pour chaque boutons puisqu'ils peuvent tous être cliqués-----------------------------------
+          btnSupprimer.forEach(deleteChanged => {
+            deleteChanged.addEventListener('click', (event) => {
               
-              // -----------------------------filtrer l'élément cliqué par le bouton supprimer-------------------------------------
-              productLocalStorage = productLocalStorage.filter( elt => elt.idResultatKanap !== deleteId || elt.couleurKanap !== deleteColor);
-              
-              // ------------------------------envoyer les nouvelles données dans le localStorage------------------------------------
-              localStorage.setItem('cart', JSON.stringify(productLocalStorage));               
-              
-              //--------------------------------- avertir de la suppression et recharger la page-----------------------------------
-              alert('Votre article a bien été supprimé.');
-              
-              //------------------------Si pas de produits dans le local storage on affiche que le panier est vide-------------------
-              if (productLocalStorage.length === 0) {
-                  localStorage.clear();
+              let elementDeleted = deleteChanged.closest("article");
+
+              //-------------------------on va sélectionner la couleur et l'id du produit-----------------------------------------
+
+              let deleteId = elementDeleted.dataset.id
+              let deleteColor = elementDeleted.dataset.color
+
+          //-------------------on supprimer l'objet dans le DOM------------------------------------------------------
+
+              document.removeChild(elementDeleted)
+
+      //------------------on le supprimer du localstorage----------------------------------------------------------
+
+              //----------------------------on va créer une variable 0 qui nous servir à être comparée à la longueur du localstorage-----------------
+              let c = 0 
+              let d = JSON.parse(localStorage.getItem('panier')).length
+
+             
+              //---------------notre boucle while on va devoir parcourir le localstorage pour savoir quel élément on va devoir supprimer-----------
+              while (c < d){ } //tant que c (variable égal au départ à 0) est inférieur à d (longeur du localstorage)donc tant qu'on a pas parcouru le localstorage
+              if(deleteId === cart[c][0] && deleteColor.localeCompare(cart[c][2]) === 0){
+                c = d
                 }
-                //-------------------------------Refresh rapide de la page-----------------------------------------------------
-                location.reload();
-              });
-            };
-          }
-        }
+              c++
+
+            } 
+            )}
+
+
+          
+          )}
         recupArticle();
-        supprimerElement();
+       
 
 let sommeTotal = 0;
 
