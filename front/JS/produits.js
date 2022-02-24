@@ -61,25 +61,11 @@ const showProduct = async () => {
 let product = resultatkanap
 
 //------------------- on relis le  HTML avec le JS pour le selection des couleurs  et la quantite------
- 
-let color = document.querySelector("#colors");
-let quantite = document.querySelector('#quantity')
+let quantity = Number(document.getElementById("quantity").value)
+let colorSelected = document.getElementById("colors").value
 
+const productId = urlParams.get("id")
 
-//-------------------- on crée une fonction qui va etre appelle des qu'on change de couleur ----
-
-function selectColor(){
-
-  //----------------- on recupere la couleur que l'utilisateur choisie-------
- 
-  var teinte = color.value
-  console.log(teinte)
-
-  //------------------ on l'ajoute au tableau produit --------------------------------
- 
-  product.teinteSelect = teinte
-  console.log(product)
-}
 
 //-------------------- on crée une fonction qui va etre appelle des qu'on change la quantite ----
 
@@ -112,13 +98,13 @@ color.addEventListener('input' ,(e) => {
     localStorage.setItem(key, value);
   }
 
-  bouton.addEventListener("click", () => {
+  
+bouton.addEventListener("click", () => {
     addToCart(
       idResultatKanap,
       JSON.stringify({
-      	product:_id,
-	product:quantiteSelect,
-        product:teinteSelect
+      	productId,quantity,
+        colorSelected
 
       }));
       location.href = "cart.html"

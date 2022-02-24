@@ -5,6 +5,8 @@ let articles = [];
 let container = document.querySelector("#container")
 let total = document.querySelector("#total")
 
+console.log(articles);
+
 //---------------------- Création d'une fonction qui ajoute chaque element du LocalStorage dans le tableau articles------------
 function recupStorage() {
   //---------------------- boucle qui envoi les elements dans le tableau articles-------------------------
@@ -113,10 +115,12 @@ function recupArticle() {
              
               //---------------notre boucle while on va devoir parcourir le localstorage pour savoir quel élément on va devoir supprimer-----------
               while (c < d){ } //tant que c (variable égal au départ à 0) est inférieur à d (longeur du localstorage)donc tant qu'on a pas parcouru le localstorage
-              if(deleteId === cart[c][0] && deleteColor.localeCompare(cart[c][2]) === 0){
+              if(deleteId === articles[c][0] && deleteColor.localeCompare(articles[c][2]) === 0){
                 c = d
                 }
               c++
+              articles[a][1] = inputValue
+            localStorage.setItem('panier', JSON.stringify(articles));
 
             } 
             )}
