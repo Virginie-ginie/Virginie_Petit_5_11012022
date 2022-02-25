@@ -2,10 +2,8 @@
 
 //-----------------------j'initialise un tableau qui va acceuillir l'ensemble des articles-------------------------------
 let articles = [];
-let container = document.querySelector("#container")
-let total = document.querySelector("#total")
-
-console.log(articles);
+let container = document.querySelector("#container");
+let total = document.querySelector("#total");
 
 //---------------------- Création d'une fonction qui ajoute chaque element du LocalStorage dans le tableau articles------------
 function recupStorage() {
@@ -22,36 +20,32 @@ recupStorage();
 //---------------------- Faire une boucle pour parcourir le tableau ---------------------
 function recupArticle() {
   articles.forEach((kanap) => {
-    
     console.log(kanap);
-    
+
     console.log(kanap.name);
-   
-    
+
     //-------------------------------On recupere les prix dans l'API---------------------------
     let price;
     const recupPrice = async () => {
       await fetch("http://localhost:3000/api/products/" + kanap.id)
-      .then((res) => res.json())
-      .then((JSON) => (price = JSON.price))
-      
-      .then(() => console.log(price))
-      .catch((error) => console.error(error));
+        .then((res) => res.json())
+        .then((JSON) => (price = JSON.price))
+
+        .then(() => console.log(price))
+        .catch((error) => console.error(error));
     };
 
     //--------------------- Multiplication quantité * prix unitaire----------------------
     let prixUnitaire = 0;
-    async function multiplierPrix(){
+    async function multiplierPrix() {
       await recupPrice();
       prixUnitaire = kanap.quantiteSelect * price;
 
-    console.log(prixUnitaire);
-    
+      console.log(prixUnitaire);
     }
-    
 
-//-----------------------------on insere nos elements dans l'HTML-----------------------------------------
-    async function remplirPanier(){
+    //-----------------------------on insere nos elements dans l'HTML-----------------------------------------
+    async function remplirPanier() {
       await multiplierPrix();
       const cart = `
                 <article class="cart__item" data-id="{product-ID}" data-color="{product-color}">
@@ -76,68 +70,59 @@ function recupArticle() {
                 </div>
               </article>`;
 
-              const Total = `
+      const Total = `
               <p>Total (<span id="totalQuantity"><!-- 2 --></span> articles) : <span id="totalPrice">${prixUnitaire}</span> €</p>
-              `   
-                  
-              container.innerHTML += cart;
-              total.innerHTML += Total
-            }
-           
-          });
-          //*******************************************Supprimer un element du panier*************************************************
-          
-          //---------------on a sélectionné tous les boutons supprimés----------------------------
-          
-          let btnSupprimer = document.querySelectorAll(".deleteItem");
+              `;
 
-      //------------------on doit écouter pour chaque boutons puisqu'ils peuvent tous être cliqués-----------------------------------
-          btnSupprimer.forEach(deleteChanged => {
-            deleteChanged.addEventListener('click', (event) => {
-              
-              let elementDeleted = deleteChanged.closest("article");
+      container.innerHTML += cart;
+      total.innerHTML += Total;
+    }
+    remplirPanier();
+  });
+  //*******************************************Supprimer un element du panier*************************************************
 
-              //-------------------------on va sélectionner la couleur et l'id du produit-----------------------------------------
+  //---------------on a sélectionné tous les boutons supprimés----------------------------
 
-              let deleteId = elementDeleted.dataset.id
-              let deleteColor = elementDeleted.dataset.color
+  // let btnSupprimer = document.querySelectorAll(".deleteItem");
 
-          //-------------------on supprimer l'objet dans le DOM------------------------------------------------------
+  // //------------------on doit écouter pour chaque boutons puisqu'ils peuvent tous être cliqués-----------------------------------
+  // btnSupprimer.forEach((deleteChanged) => {
+  //   deleteChanged.addEventListener("click", (event) => {
+  //     let elementDeleted = deleteChanged.closest("article");
 
-              document.removeChild(elementDeleted)
+  //     //-------------------------on va sélectionner la couleur et l'id du produit-----------------------------------------
 
-      //------------------on le supprimer du localstorage----------------------------------------------------------
+  //     let deleteId = elementDeleted.dataset.id;
+  //     let deleteColor = elementDeleted.dataset.color;
 
-              //----------------------------on va créer une variable 0 qui nous servir à être comparée à la longueur du localstorage-----------------
-              let c = 0 
-              let d = JSON.parse(localStorage.getItem('panier')).length
+  //     //-------------------on supprimer l'objet dans le DOM------------------------------------------------------
 
-             
-              //---------------notre boucle while on va devoir parcourir le localstorage pour savoir quel élément on va devoir supprimer-----------
-              while (c < d){ } //tant que c (variable égal au départ à 0) est inférieur à d (longeur du localstorage)donc tant qu'on a pas parcouru le localstorage
-              if(deleteId === articles[c][0] && deleteColor.localeCompare(articles[c][2]) === 0){
-                c = d
-                }
-              c++
-              articles[a][1] = inputValue
-            localStorage.setItem('panier', JSON.stringify(articles));
+  //     document.removeChild(elementDeleted);
 
-            } 
-            )}
+  //     //------------------on le supprimer du localstorage----------------------------------------------------------
 
+  //     //----------------------------on va créer une variable 0 qui nous servir à être comparée à la longueur du localstorage-----------------
+  //     let c = 0;
+  //     let d = JSON.parse(localStorage.getItem("panier")).length;
 
-          
-          )}
-        recupArticle();
-       
+  //     //---------------notre boucle while on va devoir parcourir le localstorage pour savoir quel élément on va devoir supprimer-----------
+  //     while (c < d) {} //tant que c (variable égal au départ à 0) est inférieur à d (longeur du localstorage)donc tant qu'on a pas parcouru le localstorage
+  //     if (
+  //       deleteId === articles[c][0] &&
+  //       deleteColor.localeCompare(articles[c][2]) === 0
+  //     ) {
+  //       c = d;
+  //     }
+  //     c++;
+  //   });
+  // });
+}
+
+recupArticle();
 
 let sommeTotal = 0;
 
 //------------------------------Modifier la quantité / la couleur------------------------------------------
-
-
-
-
 
 //*********************************************FORMULAIRE *************************************************************
 
@@ -145,34 +130,31 @@ let sommeTotal = 0;
 
 let totalQuantiteInput = document.querySelector("#totalQuantity");
 let totalPriceInput = document.querySelector("#totalPrice");
-let prenomInput = document.querySelector("#firstName");
-let nomInput = document.querySelector("#lastName");
-let adresseInput = document.querySelector("#address");
-let villeInput = document.querySelector("#city");
-let emailInput = document.querySelector("#email");
+let firstName = document.querySelector("#firstName");
+let lastName = document.querySelector("#lastName");
+let address = document.querySelector("#address");
+let city = document.querySelector("#city");
+let email = document.querySelector("#email");
 let btnCommanderInput = document.querySelector("#order");
 
 //--------------------------- On crée un fonction pour envoyer le formulaire -----------------------------------
 
 function envoiForm() {
   let contact = {
-    prenomInput: prenomInput.value,
-    nomInput: nomInput.value,
-    adresseInput: adresseInput.value,
-    villeInput: villeInput.value,
-    emailInput: emailInput.value,
+    firstName: firstName.value,
+    lastName: lastName.value,
+    address: address.value,
+    city: city.value,
+    email: email.value,
   };
   console.log(contact);
 }
 
 btnCommanderInput.addEventListener("click", (e) => {
-
   //--------empecher le refresh de la page quand on clique------------------
   e.preventDefault();
-  
-  envoiForm();
 
-  
+  envoiForm();
 });
 
 //******************************************************FORMULAIRE ERREUR ****************************************************************
@@ -181,32 +163,30 @@ btnCommanderInput.addEventListener("click", (e) => {
 
 const regexNames = /^[a-z ,.'-]+$/i;
 const regexAddress = /^[a-zA-Z0-9\s,'-]*$/;
-const regexCity = /^([a-zA-Z\u0080-\u024F]+(?:. |-| |'))*[a-zA-Z\u0080-\u024F]*$/;
+const regexCity =
+  /^([a-zA-Z\u0080-\u024F]+(?:. |-| |'))*[a-zA-Z\u0080-\u024F]*$/;
 const regexMail = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9._-]{2,}\.[a-z]{2,4}$/;
 
 //------------------------chaque fois que l'utilisateur tente d'envoyer les données------------------------------
 //------------------------on vérifie que le champ est valide---------------------------------------------------
 
-prenomInput.addEventListener("input", () => {
-  
+firstName.addEventListener("input", () => {
   //-------------------si il est invalide, on affiche un message d'erreur personnalisé-------------------------
 
-  if (regexNames.test(prenomInput.value) == false) {
+  if (regexNames.test(firstName.value) == false) {
     document.getElementById("firstNameErrorMsg").innerHTML =
       "format de votre prénom incorrect";
   } else {
     document.getElementById("firstNameErrorMsg").innerHTML = "";
   }
-
-}); 
+});
 
 //-------------------ça empêche l'envoi des données du formulaire au back---------------------------------
 
-  //-------------------sinon le msg d'erreur s'enlève-----------------------------------------------------
-  
+//-------------------sinon le msg d'erreur s'enlève-----------------------------------------------------
 
-nomInput.addEventListener("input", () => {
-  if (regexNames.test(nomInput.value) == false) {
+lastName.addEventListener("input", () => {
+  if (regexNames.test(lastName.value) == false) {
     //-----------------------------si les donnees saisies dans mon input sont incorrectes, un msg d'erreur apparait------------------
 
     document.getElementById("lastNameErrorMsg").innerHTML =
@@ -216,8 +196,8 @@ nomInput.addEventListener("input", () => {
   }
 });
 
-adresseInput.addEventListener("input", () => {
-  if (regexAddress.test(adresseInput.value) == false) {
+address.addEventListener("input", () => {
+  if (regexAddress.test(address.value) == false) {
     document.getElementById("addressErrorMsg").innerHTML =
       "format d'adresse incorrect";
   } else {
@@ -225,17 +205,17 @@ adresseInput.addEventListener("input", () => {
   }
 });
 
-villeInput.addEventListener("input", () => {
-  if (regexCity.test(villeInput.value) == false) {
+city.addEventListener("input", () => {
+  if (regexCity.test(city.value) == false) {
     document.getElementById("cityErrorMsg").innerHTML =
       "format de ville incorrect";
-    } else {
-      document.getElementById("cityErrorMsg").innerHTML = "";
+  } else {
+    document.getElementById("cityErrorMsg").innerHTML = "";
   }
 });
 
-emailInput.addEventListener("input", () => {
-  if (regexMail.test(emailInput.value) == false) {
+email.addEventListener("input", () => {
+  if (regexMail.test(email.value) == false) {
     document.getElementById("emailErrorMsg").innerHTML =
       "l'email saisi n'est pas correct";
   } else {
@@ -244,48 +224,36 @@ emailInput.addEventListener("input", () => {
 });
 
 
+//*****************************************Envoi du formulaire au clik du bouton**************************************
 
-//-------------lire l'id dans le tableau-------------------
-
-// ------------j'envoie chaque prix dans le tableau "price" -------------------------------
-
-
-
-//------------- faire le calcul final----------------------
-
-
-//------------- modifier la page HTML----------------------
-
-//--------------------- Aprés la boucle ---------------------------
-
-
-
-//---------------- l'afficher dans la page HTML-------------
-
-//-----------------------------------Envoi du formulaire au clik du bouton--------------------------------------
-
-const submitForm = document.getElementById('order');
+const submitForm = document.getElementById("order");
 
 submitForm.addEventListener("click", (e) => {
-  e.preventDefault() //empeche le refresh de la page quand on clique
+  e.preventDefault(); //empeche le refresh de la page quand on clique
 
-let envoiApi = {envoiForm,container};
-console.log(envoiApi);
+  if (e.target.value != null && envoiForm == true) {
+    let envoiForm = {
+      prenom: firstName.value,
+      nom: lastName.value,
+      adresse: address.value,
+      ville: city.value,
+      email: email.value,
+    };
+  }
 
-if(confirm("Voulez-vous valider votre commande?")){
-  fetch("http://localhost:3000/api/products/order" + recupArticle, {
-    method:"POST",
-    headers:{
-      "Accept": 'application/json',
-      "Content-Type" : 'application/json'
-    },
-    body: JSON.stringify(envoiApi)
-  })
+  let envoiApi = { envoiForm, container };
+  console.log(envoiApi);
 
-  .then(reponse =>{
-    return reponse.json();
-  })
-}
-
-
-})
+  if (confirm("Voulez-vous valider votre commande?")) {
+    fetch("http://localhost:3000/api/products/order" + recupArticle, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(envoiApi),
+    }).then((reponse) => {
+      return reponse.json();
+    });
+  }
+});
