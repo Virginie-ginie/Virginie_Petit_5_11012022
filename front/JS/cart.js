@@ -225,23 +225,23 @@ email.addEventListener("input", () => {
 
 
 //*****************************************Envoi du formulaire au clik du bouton**************************************
-
+let products = articles
 const submitForm = document.getElementById("order");
 
 submitForm.addEventListener("click", (e) => {
   e.preventDefault(); //empeche le refresh de la page quand on clique
 
   if (e.target.value != null && envoiForm == true) {
-    let envoiForm = {
-      prenom: firstName.value,
-      nom: lastName.value,
-      adresse: address.value,
-      ville: city.value,
+    let contact = {
+     firstName: firstName.value,
+      lastName: lastName.value,
+      address: address.value,
+      city: city.value,
       email: email.value,
     };
   }
 
-  let envoiApi = { envoiForm, container };
+  let envoiApi = { contact, products };
   console.log(envoiApi);
 
   if (confirm("Voulez-vous valider votre commande?")) {
