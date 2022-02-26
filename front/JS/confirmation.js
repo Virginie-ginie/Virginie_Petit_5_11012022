@@ -1,9 +1,15 @@
+
+// ---------------- on recuperer le numéro de commande dans la sessionStorage-------------------------
+
+let numberCommande = sessionStorage.setItem('order')
+
+
 const confirmation = document.getElementById("limitedWidthBlock")
 
 confirmation.innerHTML =
 
 `<div class="confirmation">
-          <p>Commande validée ! Votre numéro de commande est : <span id="orderId"><!-- 65431343444684674 --></span></p>
+          <p>Commande validée ! Votre numéro de commande est : <span id="orderId">${numberCommande}</span></p>
         </div>`
 
         localStorage.clear();

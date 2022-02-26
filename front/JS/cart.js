@@ -4,6 +4,8 @@
 let articles = [];
 let container = document.querySelector("#container");
 let total = document.querySelector("#total");
+let products = []
+
 
 //---------------------- Création d'une fonction qui ajoute chaque element du LocalStorage dans le tableau articles------------
 function recupStorage() {
@@ -12,6 +14,7 @@ function recupStorage() {
     const key = localStorage.key(i);
     let article = JSON.parse(localStorage.getItem(key));
     articles.push(article);
+    products.push(article.id)
   }
   console.log(articles);
 }
@@ -225,27 +228,26 @@ email.addEventListener("input", () => {
 
 
 //*****************************************Envoi du formulaire au clik du bouton**************************************
-let products = articles
 const submitForm = document.getElementById("order");
 
 submitForm.addEventListener("click", (e) => {
   e.preventDefault(); //empeche le refresh de la page quand on clique
 
-  if (e.target.value != null && envoiForm == true) {
-    let contact = {
+  
+     let contact = {
      firstName: firstName.value,
       lastName: lastName.value,
       address: address.value,
       city: city.value,
       email: email.value,
     };
-  }
+
 
   let envoiApi = { contact, products };
   console.log(envoiApi);
 
   if (confirm("Voulez-vous valider votre commande?")) {
-    fetch("http://localhost:3000/api/products/order" + recupArticle, {
+    fetch("http://localhost:3000/api/products/order", {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -254,6 +256,11 @@ submitForm.addEventListener("click", (e) => {
       body: JSON.stringify(envoiApi),
     }).then((reponse) => {
       return reponse.json();
-    });
+    })
+    .then(reponse =>{
+      sessionStorage.setItem('order',reponse.orderId)
+
+    })
   }
 });
+
