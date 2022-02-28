@@ -5,8 +5,12 @@ let articles = [];
 let container = document.querySelector("#container");
 let total = document.querySelector("#total");
 let products = []
+let productLocalStorage = JSON.parse(localStorage.getItem("cart"));
+if (!productLocalStorage) 
 
-
+function deleteKanap(id){
+  localStorage.removeItem(id);
+}
 //---------------------- Création d'une fonction qui ajoute chaque element du LocalStorage dans le tableau articles------------
 function recupStorage() {
   //---------------------- boucle qui envoi les elements dans le tableau articles-------------------------
@@ -22,6 +26,7 @@ recupStorage();
 
 //---------------------- Faire une boucle pour parcourir le tableau ---------------------
 function recupArticle() {
+  
   articles.forEach((kanap) => {
     console.log(kanap);
 
@@ -50,6 +55,8 @@ function recupArticle() {
     //-----------------------------on insere nos elements dans l'HTML-----------------------------------------
     async function remplirPanier() {
       await multiplierPrix();
+
+   
       const cart = `
                 <article class="cart__item" data-id="{product-ID}" data-color="{product-color}">
                 <div class="cart__item__img">
@@ -73,59 +80,35 @@ function recupArticle() {
                 </div>
               </article>`;
 
-      const Total = `
-              <p>Total (<span id="totalQuantity"><!-- 2 --></span> articles) : <span id="totalPrice">${prixUnitaire}</span> €</p>
-              `;
-
-      container.innerHTML += cart;
-      total.innerHTML += Total;
-    }
-    remplirPanier();
+                const Total = `
+                <p>Total (<span id="totalQuantity"><!-- 2 --></span> articles) : <span id="totalPrice">${prixUnitaire}</span> €</p>
+                `;
+                //*******************************************Supprimer un element du panier*************************************************
+             
+                container.innerHTML += cart;
+                total.innerHTML += Total;
+                //---------------on a sélectionné tous les boutons supprimés----------------------------
+                document.querySelectorAll('.deleteItem').forEach(element => {
+                  element.addEventListener('click', function (event) {
+                    if (confirm("Voulez-vous supprimer votre commande?")){
+                    event.stopPropagation();
+                    event.preventDefault();
+                    deleteKanap(kanap.id);
+                    location.reload();
+                    
+                }})})
+            }
+          
+            remplirPanier();
   });
-  //*******************************************Supprimer un element du panier*************************************************
-
-  //---------------on a sélectionné tous les boutons supprimés----------------------------
-
-  // let btnSupprimer = document.querySelectorAll(".deleteItem");
-
-  // //------------------on doit écouter pour chaque boutons puisqu'ils peuvent tous être cliqués-----------------------------------
-  // btnSupprimer.forEach((deleteChanged) => {
-  //   deleteChanged.addEventListener("click", (event) => {
-  //     let elementDeleted = deleteChanged.closest("article");
-
-  //     //-------------------------on va sélectionner la couleur et l'id du produit-----------------------------------------
-
-  //     let deleteId = elementDeleted.dataset.id;
-  //     let deleteColor = elementDeleted.dataset.color;
-
-  //     //-------------------on supprimer l'objet dans le DOM------------------------------------------------------
-
-  //     document.removeChild(elementDeleted);
-
-  //     //------------------on le supprimer du localstorage----------------------------------------------------------
-
-  //     //----------------------------on va créer une variable 0 qui nous servir à être comparée à la longueur du localstorage-----------------
-  //     let c = 0;
-  //     let d = JSON.parse(localStorage.getItem("panier")).length;
-
-  //     //---------------notre boucle while on va devoir parcourir le localstorage pour savoir quel élément on va devoir supprimer-----------
-  //     while (c < d) {} //tant que c (variable égal au départ à 0) est inférieur à d (longeur du localstorage)donc tant qu'on a pas parcouru le localstorage
-  //     if (
-  //       deleteId === articles[c][0] &&
-  //       deleteColor.localeCompare(articles[c][2]) === 0
-  //     ) {
-  //       c = d;
-  //     }
-  //     c++;
-  //   });
-  // });
+  
 }
 
 recupArticle();
 
 let sommeTotal = 0;
 
-//------------------------------Modifier la quantité / la couleur------------------------------------------
+//------------------------------Modifier la quantité ------------------------------------------
 
 //*********************************************FORMULAIRE *************************************************************
 
@@ -263,4 +246,3 @@ submitForm.addEventListener("click", (e) => {
     })
   }
 });
-

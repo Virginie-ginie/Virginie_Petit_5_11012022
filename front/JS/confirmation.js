@@ -1,7 +1,7 @@
 
 // ---------------- on recuperer le numéro de commande dans la sessionStorage-------------------------
 
-let numberCommande = sessionStorage.setItem('order')
+let numberCommande = sessionStorage.getItem('order')
 
 
 const confirmation = document.getElementById("limitedWidthBlock")
