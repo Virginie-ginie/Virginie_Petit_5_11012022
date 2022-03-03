@@ -4,13 +4,12 @@
 let articles = [];
 let container = document.querySelector("#container");
 let total = document.querySelector("#total");
-let products = []
+let products = [];
 let productLocalStorage = JSON.parse(localStorage.getItem("cart"));
-if (!productLocalStorage) 
-
-function deleteKanap(id){
-  localStorage.removeItem(id);
-}
+if (!productLocalStorage)
+  function deleteKanap(id) {
+    localStorage.removeItem(id);
+  }
 //---------------------- Création d'une fonction qui ajoute chaque element du LocalStorage dans le tableau articles------------
 function recupStorage() {
   //---------------------- boucle qui envoi les elements dans le tableau articles-------------------------
@@ -18,7 +17,7 @@ function recupStorage() {
     const key = localStorage.key(i);
     let article = JSON.parse(localStorage.getItem(key));
     articles.push(article);
-    products.push(article.id)
+    products.push(article.id);
   }
   console.log(articles);
 }
@@ -26,13 +25,13 @@ recupStorage();
 
 //---------------------- Faire une boucle pour parcourir le tableau ---------------------
 function recupArticle() {
-  
   articles.forEach((kanap) => {
     console.log(kanap);
 
     console.log(kanap.name);
 
     //-------------------------------On recupere les prix dans l'API---------------------------
+
     let price;
     const recupPrice = async () => {
       await fetch("http://localhost:3000/api/products/" + kanap.id)
@@ -56,7 +55,6 @@ function recupArticle() {
     async function remplirPanier() {
       await multiplierPrix();
 
-   
       const cart = `
                 <article class="cart__item" data-id="{product-ID}" data-color="{product-color}">
                 <div class="cart__item__img">
@@ -80,28 +78,30 @@ function recupArticle() {
                 </div>
               </article>`;
 
-                const Total = `
+      const Total = `
                 <p>Total (<span id="totalQuantity"><!-- 2 --></span> articles) : <span id="totalPrice">${prixUnitaire}</span> €</p>
                 `;
-                //*******************************************Supprimer un element du panier*************************************************
-             
-                container.innerHTML += cart;
-                total.innerHTML += Total;
-                //---------------on a sélectionné tous les boutons supprimés----------------------------
-                document.querySelectorAll('.deleteItem').forEach(element => {
-                  element.addEventListener('click', function (event) {
-                    if (confirm("Voulez-vous supprimer votre commande?")){
-                    event.stopPropagation();
-                    event.preventDefault();
-                    deleteKanap(kanap.id);
-                    location.reload();
-                    
-                }})})
-            }
-          
-            remplirPanier();
+      //*******************************************Supprimer un element du panier*************************************************
+
+      container.innerHTML += cart;
+      total.innerHTML += Total;
+
+      //---------------on a sélectionné tous les boutons supprimés----------------------------
+
+      document.querySelectorAll(".deleteItem").forEach((element) => {
+        element.addEventListener("click", function (event) {
+          if (confirm("Voulez-vous supprimer votre commande?")) {
+            event.stopPropagation();
+            event.preventDefault();
+            deleteKanap(kanap.id);
+            location.reload();
+          }
+        });
+      });
+    }
+
+    remplirPanier();
   });
-  
 }
 
 recupArticle();
@@ -109,6 +109,35 @@ recupArticle();
 let sommeTotal = 0;
 
 //------------------------------Modifier la quantité ------------------------------------------
+const btnChangeQty = document.querySelectorAll(".itemQuantity");
+btnChangeQty.forEach((btn) => {
+  const closeArticle = btn.closest("article");
+  const id = closeArticle.dataset.id;
+  // console.log(id)
+  let quantityUpdate = "";
+  const color = closeArticle.dataset.color;
+  btn.addEventListener("change", (event) => {
+    event.preventDefault();
+    quantityUpdate = Number(btn.value);
+
+    cartArray.forEach((couch) => {
+      if (couch.teinteSelect == color && couch.ID == id) {
+        couch.quantiteSelect = quantityUpdate;
+        if (couch.quantiteSelect == 0) {
+          let index = cartArray.indexOf(couch);
+          if (confirm("Cet article sera supprimé de votre panier")) {
+            closeArticle.remove(); //supprimer le tag article
+            cartArray.splice(index, 1); // on retire ce canapé du panier
+          }
+        }
+      }
+    });
+    if (confirm("Êtes-vous sur de vouloir modifier la quantité")) {
+      window.location.reload();
+      localStorage.setItem("cart", JSON.stringify(cartArray));
+    }
+  });
+});
 
 //*********************************************FORMULAIRE *************************************************************
 
@@ -209,22 +238,19 @@ email.addEventListener("input", () => {
   }
 });
 
-
 //*****************************************Envoi du formulaire au clik du bouton**************************************
 const submitForm = document.getElementById("order");
 
 submitForm.addEventListener("click", (e) => {
   e.preventDefault(); //empeche le refresh de la page quand on clique
 
-  
-     let contact = {
-     firstName: firstName.value,
-      lastName: lastName.value,
-      address: address.value,
-      city: city.value,
-      email: email.value,
-    };
-
+  let contact = {
+    firstName: firstName.value,
+    lastName: lastName.value,
+    address: address.value,
+    city: city.value,
+    email: email.value,
+  };
 
   let envoiApi = { contact, products };
   console.log(envoiApi);
@@ -237,13 +263,13 @@ submitForm.addEventListener("click", (e) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(envoiApi),
-    }).then((reponse) => {
-      return reponse.json();
     })
-    .then(reponse =>{
-      sessionStorage.setItem('order',reponse.orderId)
-
-    })
-    location.href = "confirmation.html"
+      .then((reponse) => {
+        return reponse.json();
+      })
+      .then((reponse) => {
+        sessionStorage.setItem("order", reponse.orderId);
+      });
+    location.href = "confirmation.html";
   }
 });
