@@ -244,5 +244,6 @@ submitForm.addEventListener("click", (e) => {
       sessionStorage.setItem('order',reponse.orderId)
 
     })
+    location.href = "confirmation.html"
   }
 });
