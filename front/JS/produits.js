@@ -1,18 +1,21 @@
-//------------------Appel de L'id------------------------------------------------
+//------------------Recuperation de L'id dans l'URL------------------------------------------------
 let idResultatKanap = new URL(window.location.href).searchParams.get("id");
 
 //----------------Appel de l'API--------------------------------------
-
+//on initialise une variable qui va recuperer la reponse de la requete
 let resultatkanap;
 const getResultatKanap = async () => {
   await fetch("http://localhost:3000/api/products/" + idResultatKanap)
+  // on appel la reponse en JSON
     .then((res) => res.json())
+    // on la met dans resulatatkanap
     .then((JSON) => (resultatkanap = JSON))
     .catch((error) => console.error(error));
 };
 
 getResultatKanap();
 
+//une fois que la fonction getresultat à fini on crée une nouvelle fonction qui permettra d'affiche l'article
 const showProduct = async () => {
   await getResultatKanap();
 
@@ -76,7 +79,7 @@ function selectColor(){
   console.log(teinte)
 
   //------------------ on l'ajoute au tableau produit --------------------------------
- 
+ // on modifie la valeur avant de l'envoyer au LocalStorage
   product.teinteSelect = teinte
   console.log(product)
 }
@@ -87,12 +90,12 @@ function selectQuantity(){
 
   //----------------- on recupere la quantite que l'utilisateur choisie-------
  
-  var quantite = quantity.value
-  console.log(quantite)
+  var quantity = quantite.value
+  console.log(quantity)
 
   //------------------ on l'ajoute au tableau produit --------------------------------
  
-  product.quantiteSelect = quantite
+  product.quantiteSelect = quantity
   console.log(product)
 }
 //---------------on appelle la fonction--------------------
@@ -100,7 +103,7 @@ function selectQuantity(){
 color.addEventListener('input' ,(e) => {
   selectColor()
 })
- quantity.addEventListener('input' ,(e) =>{
+ quantite.addEventListener('input' ,(e) =>{
    selectQuantity()
  })
 

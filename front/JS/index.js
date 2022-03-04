@@ -1,4 +1,5 @@
 
+// initialise un tableau vide pour y mettre la reponse de la requete 
 let resultatKanap = "";
 
 requeteAPI();
@@ -6,18 +7,23 @@ requeteAPI();
 
 
 //----------------Appel a l'API-----------------------------
+// -------- on récupere tout les articles -------------------
 function requeteAPI() {
   fetch("http://localhost:3000/api/products")
-    .then(function (reponse) {
-      if (reponse.ok) {
+  .then(function (reponse) {
+    if (reponse.ok) {
+        // on recupere la réponse en JSON
         return reponse.json();
       }
     })
+    
     .then(function (donneesAPI) {
       console.log(donneesAPI);
+      // on stock la reponse dans resultatKanap
       resultatKanap = donneesAPI;
       insererKanap(resultatKanap);
     })
+    // en cas d'erreur on la recupere 
     .catch(function (erreur) {
       console.log("Message d'erreur : \n" + erreur);
       alert("Une erreur est survenue lors du chargement");
@@ -27,6 +33,7 @@ function requeteAPI() {
 //----------------------Insérer les produits dans la page d'accueil------------------------------
 
 function insererKanap(resultatKanap) {
+  // on initialise une boucle 
   for (let i = 0; i < resultatKanap.length; i = i + 1) {
     let items = document.querySelector("#items");
 

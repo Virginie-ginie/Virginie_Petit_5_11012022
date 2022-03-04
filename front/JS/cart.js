@@ -5,6 +5,8 @@ let articles = [];
 let container = document.querySelector("#container");
 let total = document.querySelector("#total");
 let products = [];
+let princeArray = [];
+let sommeTotal = 0;
 let productLocalStorage = JSON.parse(localStorage.getItem("cart"));
 if (!productLocalStorage)
   function deleteKanap(id) {
@@ -78,13 +80,10 @@ function recupArticle() {
                 </div>
               </article>`;
 
-      const Total = `
-                <p>Total (<span id="totalQuantity"><!-- 2 --></span> articles) : <span id="totalPrice">${prixUnitaire}</span> €</p>
-                `;
       //*******************************************Supprimer un element du panier*************************************************
 
       container.innerHTML += cart;
-      total.innerHTML += Total;
+      princeArray.push(prixUnitaire);
 
       //---------------on a sélectionné tous les boutons supprimés----------------------------
 
@@ -98,46 +97,47 @@ function recupArticle() {
           }
         });
       });
+      //************************Modification des quantités********************************************** 
+      document.querySelectorAll(".itemQuantity").forEach((element) => {
+        element.addEventListener("input", function (event) {
+          if (confirm("Voulez-vous modifier votre commande?")) {
+            event.stopPropagation();
+            event.preventDefault();
+            console.log(event.target.value);
+            kanap.quantiteSelect = event.target.value;
+            localStorage[kanap.id] = JSON.stringify(kanap);
+            console.log(kanap);
+            location.reload();
+          }
+        });
+      });
     }
-
     remplirPanier();
-  });
+  }
+  );
 }
 
 recupArticle();
 
-let sommeTotal = 0;
 
-//------------------------------Modifier la quantité ------------------------------------------
-const btnChangeQty = document.querySelectorAll(".itemQuantity");
-btnChangeQty.forEach((btn) => {
-  const closeArticle = btn.closest("article");
-  const id = closeArticle.dataset.id;
-  // console.log(id)
-  let quantityUpdate = "";
-  const color = closeArticle.dataset.color;
-  btn.addEventListener("change", (event) => {
-    event.preventDefault();
-    quantityUpdate = Number(btn.value);
 
-    cartArray.forEach((couch) => {
-      if (couch.teinteSelect == color && couch.ID == id) {
-        couch.quantiteSelect = quantityUpdate;
-        if (couch.quantiteSelect == 0) {
-          let index = cartArray.indexOf(couch);
-          if (confirm("Cet article sera supprimé de votre panier")) {
-            closeArticle.remove(); //supprimer le tag article
-            cartArray.splice(index, 1); // on retire ce canapé du panier
-          }
-        }
-      }
-    });
-    if (confirm("Êtes-vous sur de vouloir modifier la quantité")) {
-      window.location.reload();
-      localStorage.setItem("cart", JSON.stringify(cartArray));
-    }
-  });
-});
+
+for (let i = 0; i < princeArray.length; i++){
+  console.log("somme total = ",sommeTotal)
+  sommeTotal += princeArray[i]
+  console.log("somme total = ",princeArray[i])
+}
+
+console.log(sommeTotal)
+
+console.log(princeArray)
+const Total = `
+<p>Total (<span id="totalQuantity"><!-- 2 --></span> articles) : <span id="totalPrice">${sommeTotal}</span> €</p>
+`;
+total.innerHTML += Total;
+
+
+
 
 //*********************************************FORMULAIRE *************************************************************
 
