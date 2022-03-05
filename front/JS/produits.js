@@ -1,134 +1,143 @@
-//------------------Recuperation de L'id dans l'URL------------------------------------------------
-let idResultatKanap = new URL(window.location.href).searchParams.get("id");
+//Récupération de l'id via les paramètres de l'url
+const idProduct = new URL(window.location.href).searchParams.get("id");
 
-//----------------Appel de l'API--------------------------------------
-//on initialise une variable qui va recuperer la reponse de la requete
-let resultatkanap;
-const getResultatKanap = async () => {
-  await fetch("http://localhost:3000/api/products/" + idResultatKanap)
-  // on appel la reponse en JSON
-    .then((res) => res.json())
-    // on la met dans resulatatkanap
-    .then((JSON) => (resultatkanap = JSON))
-    .catch((error) => console.error(error));
-};
+//Récupération des sélecteurs pour les futurs modifications
+let titleProduct = document.getElementById("title");
+let priceProduct = document.getElementById("price");
+let descriptionProduct = document.getElementById("description");
+let colorsProduct = document.getElementById("colors");
+let imgProduct = document.querySelector(".item__img");
+let img = document.createElement("img");
+imgProduct.appendChild(img);
 
-getResultatKanap();
+//Récupération de l'article grace a l'id + affichage des données de ce dernier
+getArticle();
 
-//une fois que la fonction getresultat à fini on crée une nouvelle fonction qui permettra d'affiche l'article
-const showProduct = async () => {
-  await getResultatKanap();
+//Récupération de l'article grace a l'id + affichage des données de ce dernier
+async function getArticle() {
+     await fetch("http://localhost:3000/api/products/" + idProduct)
+    .then((response) => response.json())    
+    .then(product => {
+        img.setAttribute("src", product.imageUrl);
+        img.setAttribute("alt", product.altTxt);    
+        titleProduct.innerHTML = product.name;
+        priceProduct.innerHTML = product.price;
+        descriptionProduct.innerHTML = product.description;
+        document.title = product.name;
 
-  //----------------- Création des balises------------------------------
-
-  let imageKanap = document.querySelector(".item__img");
-
-  let couleurKanap = document.querySelector("#colors");
-
-  //------------------ Ajout des balises--------------------------------
-
-  //-------------Ajout de l'image-------------------------------------------
-
-  let baliseImg = document.querySelector("img");
-  baliseImg.setAttribute("src", resultatkanap.imageUrl);
-  baliseImg.setAttribute("alt", resultatkanap.altTxt);
-  imageKanap.appendChild(baliseImg);
-
-  //--------------Ajout du nom ----------------------------------------------
-
-  let baliseNom = document.getElementById("title");
-  baliseNom.innerHTML = resultatkanap.name;
-
-  //-------------Ajout du prix ---------------------------------------------
-  let balisePrix = document.getElementById("price");
-  balisePrix.innerHTML = resultatkanap.price;
-
-  //-------------Ajout de la description------------------------------------
-
-  let baliseDescription = document.getElementById("description");
-  baliseDescription.innerHTML = resultatkanap.description;
-
-  //----------Ajout des couleurs -----------------------------------------
-
-  for (let i = 0; i < resultatkanap.colors.length; i++) {
-    let color = document.createElement("option");
-    color.setAttribute("value", resultatkanap.colors[i]);
-    color.innerHTML = resultatkanap.colors[i];
-    couleurKanap.appendChild(color);
-  }
-
-  //---------------------Ajout au local Storage --------------------------------
-
-//------------------ Tableau produit ---------------------------------
- 
-let product = resultatkanap
-
-//------------------- on relis le  HTML avec le JS pour le selection des couleurs  et la quantite------
- 
-let color = document.querySelector("#colors");
-let quantite = document.querySelector('#quantity')
-
-
-//-------------------- on crée une fonction qui va etre appelle des qu'on change de couleur ----
-
-function selectColor(){
-
-  //----------------- on recupere la couleur que l'utilisateur choisie-------
- 
-  var teinte = color.value
-  console.log(teinte)
-
-  //------------------ on l'ajoute au tableau produit --------------------------------
- // on modifie la valeur avant de l'envoyer au LocalStorage
-  product.teinteSelect = teinte
-  console.log(product)
+        for (let i=0; i < product.colors.length; i++) {
+            let color = document.createElement("option");
+            color.setAttribute("value", product.colors[i]);
+            color.innerHTML = product.colors[i];
+            colorsProduct.appendChild(color);
+        }  
+    });          
 }
 
-//-------------------- on crée une fonction qui va etre appelle des qu'on change la quantite ----
+// Ajouté un article au panier
+let addToCartBtn = document.getElementById("addToCart");
+addToCartBtn.addEventListener("click", addToCart);
 
-function selectQuantity(){
+function addToCart() {
 
-  //----------------- on recupere la quantite que l'utilisateur choisie-------
- 
-  var quantity = quantite.value
-  console.log(quantity)
+    const colorChoice = document. querySelector("#colors");
+    const quantityChoice = document.querySelector("#quantity");
 
-  //------------------ on l'ajoute au tableau produit --------------------------------
- 
-  product.quantiteSelect = quantity
-  console.log(product)
+    if (quantityChoice.value > 0 && quantityChoice.value <=100 && quantityChoice.value != 0 && colorChoice.value != 0) { 
+
+        if (localStorage.getItem("cart")) {
+    
+            let productCart = JSON.parse(localStorage.getItem("cart"));
+            console.log(productCart);
+
+            let idKanap = idProduct;
+            let colorKanap = document.querySelector("#colors").value;
+            let qtyKanap = document.querySelector("#quantity").value;
+
+            const resultFind = productCart.find(
+                (el) => el.idKanap === idProduct && el.colorKanap === colorKanap);
+                //Si le produit commandé est déjà dans le panier
+                console.log("result find est egal a :");
+                console.log(resultFind);
+                console.log("fin result find");
+
+                if (resultFind) {
+                    console.log("resultfind kanap = " + resultFind.qtyKanap);
+                    console.log("qtykanap = " + qtyKanap);
+                    let newQuantite = parseInt(qtyKanap) + parseInt(resultFind.qtyKanap);
+                    console.log("newQtt est egal a : " + newQuantite);
+                    resultFind.qtyKanap = newQuantite;
+                    localStorage.setItem("cart", JSON.stringify(productCart));
+                    console.log("productCart egal :");
+                    console.log(productCart);
+                    console.log("fin productCart");
+                //Si le produit commandé n'est pas dans le panier
+                } else {
+                    
+                    let productCart = JSON.parse(localStorage.getItem("cart"));
+
+                    let idKanap = idProduct;
+                    let nameKanap = document.querySelector("#title").textContent;
+                    let colorKanap = document.querySelector("#colors").value;
+                    let qtyKanap = document.querySelector("#quantity").value;
+                    let imgKanap = img.src; 
+                    let altImg = img.alt;
+                    let priceKanap = document.querySelector("#price").textContent;
+                    
+                    console.log(img);
+                    console.log(idKanap, nameKanap, colorKanap, qtyKanap, imgKanap, altImg, priceKanap);
+                
+                    let productCartObj = {
+                        idKanap : idProduct,
+                        nameKanap : nameKanap,
+                        colorKanap : colorKanap,
+                        qtyKanap  : qtyKanap,
+                        imgKanap : imgKanap,
+                        altImg : altImg,
+                        priceKanap : priceKanap
+                    };
+                
+                    productCart.push(productCartObj);
+                
+                    let objCart = JSON.stringify(productCart);
+                    localStorage.setItem("cart", objCart);
+                
+                    alert("Ajouté au panier !");
+                }
+
+        } else {
+
+            let productCart = [];
+
+            let idKanap = idProduct;
+            let nameKanap = document.querySelector("#title").textContent;
+            let colorKanap = document.querySelector("#colors").value;
+            let qtyKanap = document.querySelector("#quantity").value;
+            let imgKanap = img.src; 
+            let altImg = img.alt;
+            let priceKanap = document.querySelector("#price").textContent;
+            
+            console.log(img);
+            console.log(idKanap, nameKanap, colorKanap, qtyKanap, imgKanap, altImg, priceKanap);
+        
+            let productCartObj = {
+                idKanap : idProduct,
+                nameKanap : nameKanap,
+                colorKanap : colorKanap,
+                qtyKanap  : qtyKanap,
+                imgKanap : imgKanap,
+                altImg : altImg,
+                priceKanap : priceKanap
+            };
+        
+            productCart.push(productCartObj);
+        
+            let objCart = JSON.stringify(productCart);
+            localStorage.setItem("cart", objCart);
+        
+            alert("Ajouté au panier !");    
+            
+                  location.href = "cart.html"
+        }
+    }
 }
-//---------------on appelle la fonction--------------------
-
-color.addEventListener('input' ,(e) => {
-  selectColor()
-})
- quantite.addEventListener('input' ,(e) =>{
-   selectQuantity()
- })
-
-
-  let bouton = document.getElementById("addToCart");
-  console.log(product);
-
-  function addToCart(key, value) {
-    localStorage.setItem(key, value);
-  }
-
-  bouton.addEventListener("click", () => {
-    addToCart(
-      idResultatKanap,
-      JSON.stringify({
-      	id:product._id,
-        name:product.name,
-        image:product.imageUrl,
-        altTxt:product.altTxt,
-        quantiteSelect:product.quantiteSelect,
-        teinteSelect:product.teinteSelect
-
-      }));
-      location.href = "cart.html"
-  });
-};
-showProduct();
-

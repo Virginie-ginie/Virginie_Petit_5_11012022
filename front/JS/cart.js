@@ -1,275 +1,318 @@
-//---------------------- Lire le Local storage pour recuperer le tableau de produit -------------------------------------
-
-//-----------------------j'initialise un tableau qui va acceuillir l'ensemble des articles-------------------------------
-let articles = [];
-let container = document.querySelector("#container");
-let total = document.querySelector("#total");
-let products = [];
-let princeArray = [];
-let sommeTotal = 0;
 let productLocalStorage = JSON.parse(localStorage.getItem("cart"));
-if (!productLocalStorage)
-  function deleteKanap(id) {
-    localStorage.removeItem(id);
-  }
-//---------------------- Création d'une fonction qui ajoute chaque element du LocalStorage dans le tableau articles------------
-function recupStorage() {
-  //---------------------- boucle qui envoi les elements dans le tableau articles-------------------------
-  for (let i = 0; i < localStorage.length; i++) {
-    const key = localStorage.key(i);
-    let article = JSON.parse(localStorage.getItem(key));
-    articles.push(article);
-    products.push(article.id);
-  }
-  console.log(articles);
+
+if (!productLocalStorage) {
+
+    const titleCart = document.querySelector("h1");
+    const sectionCart = document.querySelector(".cart");
+    
+    titleCart.innerHTML = "Votre panier est vide !";
+    sectionCart.style.display = "none";
+    
+  } else {
+    
+    for (let i=0; i < productLocalStorage.length; i++) {
+      
+      const parentCart = document.getElementById('cart__items');
+        // Création de la balise "article" et insertion dans la section
+        let productArticle = document.createElement("article");
+        parentCart.appendChild(productArticle);
+        productArticle.className = "cart__item";
+        productArticle.setAttribute("data-id", productLocalStorage[i].idKanap);
+
+        // Insertion de l'élément "div" pour l'image produit
+        let productDivImg = document.createElement("div");
+        productArticle.appendChild(productDivImg);
+        productDivImg.className = "cart__item__img";
+
+        // Insertion de l'image
+        let productImg = document.createElement("img");
+        productDivImg.appendChild(productImg);
+        productImg.src = productLocalStorage[i].imgKanap;
+        // productImg.alt = productLocalStorage.altImgProduit;
+        
+        // Insertion de l'élément "div" pour la description produit
+        let productItemContent = document.createElement("div");
+        productArticle.appendChild(productItemContent);
+        productItemContent.className = "cart__item__content";
+
+        // Insertion de l'élément "div"
+        let productItemContentTitlePrice = document.createElement("div");
+        productItemContent.appendChild(productItemContentTitlePrice);
+        productItemContentTitlePrice.className = "cart__item__content__titlePrice";
+        
+        // Insertion du titre h2
+        let productTitle = document.createElement("h2");
+        productItemContentTitlePrice.appendChild(productTitle);
+        productTitle.innerHTML = productLocalStorage[i].nameKanap;
+
+        // Insertion de la couleur
+        let productColor = document.createElement("p");
+        productTitle.appendChild(productColor);
+        productColor.innerHTML = productLocalStorage[i].colorKanap;
+        productColor.style.fontSize = "20px";
+
+        // Insertion du prix
+        let productPrice = document.createElement("p");
+        productItemContentTitlePrice.appendChild(productPrice);
+        productPrice.innerHTML = productLocalStorage[i].priceKanap + " €";
+
+        // Insertion de l'élément "div"
+        let productItemContentSettings = document.createElement("div");
+        productItemContent.appendChild(productItemContentSettings);
+        productItemContentSettings.className = "cart__item__content__settings";
+
+        // Insertion de l'élément "div"
+        let productItemContentSettingsQuantity = document.createElement("div");
+        productItemContentSettings.appendChild(productItemContentSettingsQuantity);
+        productItemContentSettingsQuantity.className = "cart__item__content__settings__quantity";
+        
+        // Insertion de "Qté : "
+        let productQty = document.createElement("p");
+        productItemContentSettingsQuantity.appendChild(productQty);
+        productQty.innerHTML = "Qté : ";
+
+        // Insertion de la quantité
+        let productQuantity = document.createElement("input");
+        productItemContentSettingsQuantity.appendChild(productQuantity);
+        productQuantity.value = productLocalStorage[i].qtyKanap;
+        productQuantity.className = "itemQuantity";
+        productQuantity.setAttribute("type", "number");
+        productQuantity.setAttribute("min", "1");
+        productQuantity.setAttribute("max", "100");
+        productQuantity.setAttribute("name", "itemQuantity");
+
+        // Insertion de l'élément "div"
+        let productItemContentSettingsDelete = document.createElement("div");
+        productItemContentSettings.appendChild(productItemContentSettingsDelete);
+        productItemContentSettingsDelete.className = "cart__item__content__settings__delete";
+
+        // Insertion de "p" supprimer
+        let productSupprimer = document.createElement("p");
+        productItemContentSettingsDelete.appendChild(productSupprimer);
+        productSupprimer.className = "deleteItem";
+        productSupprimer.innerHTML = "Supprimer";
+        productSupprimer.addEventListener("click", (e) => {
+            e.preventDefault;
+        
+            // enregistrer l'id et la couleur séléctionnés par le bouton supprimer
+            let deleteId = productLocalStorage[i].idKanap;
+            let deleteColor = productLocalStorage[i].colorKanap;
+
+            // filtrer l'élément cliqué par le bouton supprimer
+            productLocalStorage = productLocalStorage.filter( elt => elt.idKanap !== deleteId || elt.colorKanap !== deleteColor);
+
+            // envoyer les nouvelles données dans le localStorage
+            localStorage.setItem('cart', JSON.stringify(productLocalStorage));               
+
+            // avertir de la suppression et recharger la page
+            confirm('Voulez vous vraiment supprimer cet article?');
+            
+            //Si pas de produits dans le local storage on affiche que le panier est vide
+            if (productLocalStorage.length === 0) {
+                localStorage.clear();
+            }
+            //Refresh rapide de la page
+            location.reload();
+        });
+    }
 }
-recupStorage();
 
-//---------------------- Faire une boucle pour parcourir le tableau ---------------------
-function recupArticle() {
-  articles.forEach((kanap) => {
-    console.log(kanap);
+function getTotals(){
 
-    console.log(kanap.name);
+    // Récupération du total des quantités
+    var elemsQtt = document.getElementsByClassName('itemQuantity');
+    var myLength = elemsQtt.length,
+    totalQtt = 0;
 
-    //-------------------------------On recupere les prix dans l'API---------------------------
+    for (var i = 0; i < myLength; ++i) {
+        totalQtt += elemsQtt[i].valueAsNumber;
+    }
+    
+    let productTotalQuantity = document.getElementById('totalQuantity');
+    productTotalQuantity.innerHTML = totalQtt;
 
-    let price;
-    const recupPrice = async () => {
-      await fetch("http://localhost:3000/api/products/" + kanap.id)
-        .then((res) => res.json())
-        .then((JSON) => (price = JSON.price))
+    // Récupération du prix total
+    totalPrice = 0;
+    for (var i = 0; i < myLength; ++i) {
+        totalPrice += (elemsQtt[i].valueAsNumber * productLocalStorage[i].priceKanap);
+    }
 
-        .then(() => console.log(price))
-        .catch((error) => console.error(error));
+    let productTotalPrice = document.getElementById('totalPrice');
+    productTotalPrice.innerHTML = totalPrice;
+}
+getTotals();
+
+
+function modifyQtt() {
+    let qttModif = document.querySelectorAll(".itemQuantity");
+
+    for (let k= 0; k < qttModif.length; k++){
+        qttModif[k].addEventListener("change" , (event) => {
+            event.preventDefault();
+
+            //Selection de l'element à modifier en fonction de son id ET sa couleur
+            let quantityModif = productLocalStorage[k].qtyKanap;
+            let qttModifValue = qttModif[k].valueAsNumber;
+            
+            const resultFind = productLocalStorage.find((el) => el.qttModifValue !== quantityModif);
+
+            resultFind.qtyKanap = qttModifValue;
+            productLocalStorage[k].qtyKanap = resultFind.qtyKanap;
+
+            localStorage.setItem("cart", JSON.stringify(productLocalStorage));
+        
+            // refresh rapide
+            location.reload();
+        })
+    }
+}
+modifyQtt();
+
+
+//Instauration formulaire avec regex
+function getForm() {
+    // Ajout des Regex
+    let form = document.querySelector(".cart__order__form");
+
+    //Création des expressions régulières
+    let emailRegExp = new RegExp('^[a-zA-Z0-9.-_]+[@]{1}[a-zA-Z0-9.-_]+[.]{1}[a-z]{2,10}$');
+    let charRegExp = new RegExp("^[a-zA-Z ,.'-]+$");
+    let addressRegExp = new RegExp("^[0-9]{1,3}(?:(?:[,. ]){1}[-a-zA-Zàâäéèêëïîôöùûüç]+)+");
+
+    // Ecoute de la modification du prénom
+    form.firstName.addEventListener('change', function() {
+        validFirstName(this);
+    });
+
+    // Ecoute de la modification du prénom
+    form.lastName.addEventListener('change', function() {
+        validLastName(this);
+    });
+
+    // Ecoute de la modification du prénom
+    form.address.addEventListener('change', function() {
+        validAddress(this);
+    });
+
+    // Ecoute de la modification du prénom
+    form.city.addEventListener('change', function() {
+        validCity(this);
+    });
+
+    // Ecoute de la modification du prénom
+    form.email.addEventListener('change', function() {
+        validEmail(this);
+    });
+
+    //validation du prénom
+    const validFirstName = function(inputFirstName) {
+        let firstNameErrorMsg = inputFirstName.nextElementSibling;
+
+        if (charRegExp.test(inputFirstName.value)) {
+            firstNameErrorMsg.innerHTML = '';
+        } else {
+            firstNameErrorMsg.innerHTML = 'Veuillez renseigner ce champ.';
+        }
     };
 
-    //--------------------- Multiplication quantité * prix unitaire----------------------
-    let prixUnitaire = 0;
-    async function multiplierPrix() {
-      await recupPrice();
-      prixUnitaire = kanap.quantiteSelect * price;
+    //validation du nom
+    const validLastName = function(inputLastName) {
+        let lastNameErrorMsg = inputLastName.nextElementSibling;
 
-      console.log(prixUnitaire);
+        if (charRegExp.test(inputLastName.value)) {
+            lastNameErrorMsg.innerHTML = '';
+        } else {
+            lastNameErrorMsg.innerHTML = 'Veuillez renseigner ce champ.';
+        }
+    };
+
+    //validation de l'adresse
+    const validAddress = function(inputAddress) {
+        let addressErrorMsg = inputAddress.nextElementSibling;
+
+        if (addressRegExp.test(inputAddress.value)) {
+            addressErrorMsg.innerHTML = '';
+        } else {
+            addressErrorMsg.innerHTML = 'Veuillez renseigner ce champ.';
+        }
+    };
+
+    //validation de la ville
+    const validCity = function(inputCity) {
+        let cityErrorMsg = inputCity.nextElementSibling;
+
+        if (charRegExp.test(inputCity.value)) {
+            cityErrorMsg.innerHTML = '';
+        } else {
+            cityErrorMsg.innerHTML = 'Veuillez renseigner ce champ.';
+        }
+    };
+
+    //validation de l'email
+    const validEmail = function(inputEmail) {
+        let emailErrorMsg = inputEmail.nextElementSibling;
+
+        if (emailRegExp.test(inputEmail.value)) {
+            emailErrorMsg.innerHTML = '';
+        } else {
+            emailErrorMsg.innerHTML = 'Veuillez renseigner votre email.';
+        }
+    };
+    }
+getForm();
+
+function postForm() {
+    const order = document.getElementById('order');
+    order.addEventListener('click', (event) => {
+    event.preventDefault();
+  
+    // je récupère les données du formulaire dans un objet
+    const contact = {
+      firstName : document.getElementById('firstName').value,
+      lastName : document.getElementById('lastName').value,
+      address : document.getElementById('address').value,
+      city : document.getElementById('city').value,
+      email : document.getElementById('email').value
     }
 
-    //-----------------------------on insere nos elements dans l'HTML-----------------------------------------
-    async function remplirPanier() {
-      await multiplierPrix();
-
-      const cart = `
-                <article class="cart__item" data-id="{product-ID}" data-color="{product-color}">
-                <div class="cart__item__img">
-                  <img src="${kanap.image}"/>
-                </div>
-                <div class="cart__item__content">
-                  <div class="cart__item__content__description">
-                    <h2>${kanap.name}</h2>
-                    <p>${kanap.teinteSelect}</p>
-                    <p>${price} €</p>
-                  </div>
-                  <div class="cart__item__content__settings">
-                    <div class="cart__item__content__settings__quantity">
-                      <p>Qté :  </p>
-                      <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${kanap.quantiteSelect}">
-                    </div>
-                    <div class="cart__item__content__settings__delete">
-                      <p class="deleteItem">Supprimer</p>
-                    </div>
-                  </div>
-                </div>
-              </article>`;
-
-      //*******************************************Supprimer un element du panier*************************************************
-
-      container.innerHTML += cart;
-      princeArray.push(prixUnitaire);
-
-      //---------------on a sélectionné tous les boutons supprimés----------------------------
-
-      document.querySelectorAll(".deleteItem").forEach((element) => {
-        element.addEventListener("click", function (event) {
-          if (confirm("Voulez-vous supprimer votre commande?")) {
-            event.stopPropagation();
-            event.preventDefault();
-            deleteKanap(kanap.id);
-            location.reload();
-          }
-        });
-      });
-      //************************Modification des quantités********************************************** 
-      document.querySelectorAll(".itemQuantity").forEach((element) => {
-        element.addEventListener("input", function (event) {
-          if (confirm("Voulez-vous modifier votre commande?")) {
-            event.stopPropagation();
-            event.preventDefault();
-            console.log(event.target.value);
-            kanap.quantiteSelect = event.target.value;
-            localStorage[kanap.id] = JSON.stringify(kanap);
-            console.log(kanap);
-            location.reload();
-          }
-        });
-      });
+    //Construction d'un array d'id depuis le local storage
+    let products = [];
+    for (let i = 0; i<productLocalStorage.length;i++) {
+        products.push(productLocalStorage[i].idKanap);
     }
-    remplirPanier();
-  }
-  );
-}
-
-recupArticle();
-
-
-
-
-for (let i = 0; i < princeArray.length; i++){
-  console.log("somme total = ",sommeTotal)
-  sommeTotal += princeArray[i]
-  console.log("somme total = ",princeArray[i])
-}
-
-console.log(sommeTotal)
-
-console.log(princeArray)
-const Total = `
-<p>Total (<span id="totalQuantity"><!-- 2 --></span> articles) : <span id="totalPrice">${sommeTotal}</span> €</p>
-`;
-total.innerHTML += Total;
-
-
-
-
-//*********************************************FORMULAIRE *************************************************************
-
-//------------------- on relis le  HTML avec le JS pour le formulaire---------------------------
-
-let totalQuantiteInput = document.querySelector("#totalQuantity");
-let totalPriceInput = document.querySelector("#totalPrice");
-let firstName = document.querySelector("#firstName");
-let lastName = document.querySelector("#lastName");
-let address = document.querySelector("#address");
-let city = document.querySelector("#city");
-let email = document.querySelector("#email");
-let btnCommanderInput = document.querySelector("#order");
-
-//--------------------------- On crée un fonction pour envoyer le formulaire -----------------------------------
-
-function envoiForm() {
-  let contact = {
-    firstName: firstName.value,
-    lastName: lastName.value,
-    address: address.value,
-    city: city.value,
-    email: email.value,
-  };
-  console.log(contact);
-}
-
-btnCommanderInput.addEventListener("click", (e) => {
-  //--------empecher le refresh de la page quand on clique------------------
-  e.preventDefault();
-
-  envoiForm();
-});
-
-//******************************************************FORMULAIRE ERREUR ****************************************************************
-
-//----------------------- Message d'erreur si le formulaire n'est pas bien rempli---------------------------------
-
-const regexNames = /^[a-z ,.'-]+$/i;
-const regexAddress = /^[a-zA-Z0-9\s,'-]*$/;
-const regexCity =
-  /^([a-zA-Z\u0080-\u024F]+(?:. |-| |'))*[a-zA-Z\u0080-\u024F]*$/;
-const regexMail = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9._-]{2,}\.[a-z]{2,4}$/;
-
-//------------------------chaque fois que l'utilisateur tente d'envoyer les données------------------------------
-//------------------------on vérifie que le champ est valide---------------------------------------------------
-
-firstName.addEventListener("input", () => {
-  //-------------------si il est invalide, on affiche un message d'erreur personnalisé-------------------------
-
-  if (regexNames.test(firstName.value) == false) {
-    document.getElementById("firstNameErrorMsg").innerHTML =
-      "format de votre prénom incorrect";
-  } else {
-    document.getElementById("firstNameErrorMsg").innerHTML = "";
-  }
-});
-
-//-------------------ça empêche l'envoi des données du formulaire au back---------------------------------
-
-//-------------------sinon le msg d'erreur s'enlève-----------------------------------------------------
-
-lastName.addEventListener("input", () => {
-  if (regexNames.test(lastName.value) == false) {
-    //-----------------------------si les donnees saisies dans mon input sont incorrectes, un msg d'erreur apparait------------------
-
-    document.getElementById("lastNameErrorMsg").innerHTML =
-      "format de votre nom incorrect";
-  } else {
-    document.getElementById("lastNameErrorMsg").innerHTML = "";
-  }
-});
-
-address.addEventListener("input", () => {
-  if (regexAddress.test(address.value) == false) {
-    document.getElementById("addressErrorMsg").innerHTML =
-      "format d'adresse incorrect";
-  } else {
-    document.getElementById("addressErrorMsg").innerHTML = "";
-  }
-});
-
-city.addEventListener("input", () => {
-  if (regexCity.test(city.value) == false) {
-    document.getElementById("cityErrorMsg").innerHTML =
-      "format de ville incorrect";
-  } else {
-    document.getElementById("cityErrorMsg").innerHTML = "";
-  }
-});
-
-email.addEventListener("input", () => {
-  if (regexMail.test(email.value) == false) {
-    document.getElementById("emailErrorMsg").innerHTML =
-      "l'email saisi n'est pas correct";
-  } else {
-    document.getElementById("emailErrorMsg").innerHTML = "";
-  }
-});
-
-//*****************************************Envoi du formulaire au clik du bouton**************************************
-const submitForm = document.getElementById("order");
-
-submitForm.addEventListener("click", (e) => {
-  e.preventDefault(); //empeche le refresh de la page quand on clique
-
-  let contact = {
-    firstName: firstName.value,
-    lastName: lastName.value,
-    address: address.value,
-    city: city.value,
-    email: email.value,
-  };
-
-  let envoiApi = { contact, products };
-  console.log(envoiApi);
-
-  if (confirm("Voulez-vous valider votre commande?")) {
-    fetch("http://localhost:3000/api/products/order", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(envoiApi),
-    })
-      .then((reponse) => {
-        return reponse.json();
-      })
-      .then((reponse) => {
-        sessionStorage.setItem("order", reponse.orderId);
+    console.log(products);
+  
+    // je mets les valeurs du formulaire et les produits sélectionnés
+    // dans un objet...
+    const sendFormData = {
+      contact,
+      products,
+    }
+  
+    // j'envoie le formulaire + localStorage (sendFormData) 
+    // ... que j'envoie au serveur
+  
+    const options = {
+      method: 'POST',
+      body: JSON.stringify(sendFormData),
+      headers: { 
+        'Content-Type': 'application/json',
+      }
+    };
+  
+    fetch("http://localhost:3000/api/products/order", options)
+        .then(response => response.json())
+        .then(data => {
+        localStorage.setItem('orderId', data.orderId);
+        document.location.href = 'confirmation.html?id='+ data.orderId;
       });
-    location.href = "confirmation.html";
-  }
-});
+  
+  }); // fin eventListener postForm
+  } // fin envoi du formulaire postForm
+  postForm();
+
+
+
+
+
+
